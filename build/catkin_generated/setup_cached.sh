@@ -7,4 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export PWD='/home/jazz/Library.0/6-ROS-RobotModules/build'
+export PWD='/home/jazz/Library.0/6-ROS-Workspace/build'

@@ -1,4 +1,4 @@
-prefix=/home/jazz/Library.0/6-ROS-RobotModules/install
+prefix=/home/jazz/Library.0/6-ROS-Workspace/install
 
 Name: armbot_1
 Description: Description of armbot_1

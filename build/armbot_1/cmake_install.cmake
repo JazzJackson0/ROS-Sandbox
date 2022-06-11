@@ -1,8 +1,8 @@
-# Install script for directory: /home/jazz/Library.0/6-ROS-RobotModules/src/armbot_1
+# Install script for directory: /home/jazz/Library.0/6-ROS-Workspace/src/armbot_1
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/jazz/Library.0/6-ROS-RobotModules/install")
+  set(CMAKE_INSTALL_PREFIX "/home/jazz/Library.0/6-ROS-Workspace/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,17 +38,17 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/jazz/Library.0/6-ROS-RobotModules/build/armbot_1/catkin_generated/installspace/armbot_1.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/jazz/Library.0/6-ROS-Workspace/build/armbot_1/catkin_generated/installspace/armbot_1.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/armbot_1/cmake" TYPE FILE FILES
-    "/home/jazz/Library.0/6-ROS-RobotModules/build/armbot_1/catkin_generated/installspace/armbot_1Config.cmake"
-    "/home/jazz/Library.0/6-ROS-RobotModules/build/armbot_1/catkin_generated/installspace/armbot_1Config-version.cmake"
+    "/home/jazz/Library.0/6-ROS-Workspace/build/armbot_1/catkin_generated/installspace/armbot_1Config.cmake"
+    "/home/jazz/Library.0/6-ROS-Workspace/build/armbot_1/catkin_generated/installspace/armbot_1Config-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/armbot_1" TYPE FILE FILES "/home/jazz/Library.0/6-ROS-RobotModules/src/armbot_1/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/armbot_1" TYPE FILE FILES "/home/jazz/Library.0/6-ROS-Workspace/src/armbot_1/package.xml")
 endif()
 
