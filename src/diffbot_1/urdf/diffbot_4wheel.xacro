@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<robot name="diffbot_2wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<include filename="$(find erratic_description)/urdf/erratic_hokuyo_ laser.xacro"/> 
+<xacro:property name="wheel_radius" value="0.03175"/>
+<xacro:property name="wheel_length" value="0.0254"/>
+<xacro:property name="wheel_mass" value="0.0283495"/>
+<xacro:property name="wheel_inertial_xx" value="0.000008668680579"/>
+<xacro:property name="wheel_inertial_yy" value="0.000008668680579"/>
+<xacro:property name="wheel_inertial_zz" value="0.000002381505654"/>
+<xacro:property name="wheel_x_pos" value="0.057546875"/>
+<xacro:property name="wheel_y_pos" value="0.04683125"/>
+<xacro:property name="wheel_z_pos" value="0"/>
+
+<!-- Hokuyo Laser --> 
+<erratic_hokuyo_laser parent="base_link"> 
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/> 
+</erratic_hokuyo_laser>
+
+<!--Base Link-->  
+    <link name="base_link">   
+        <inertial>
+            <mass value="1.5"/>
+            <inertia ixx="0.006926019414" ixy="0" ixz="0"
+                    iyy="0.001399316758" iyz="0" izz="0.007719868633"/>
+        </inertial>
+
+        <collision name="base_link_collision">
+            <geometry>
+                <box size="0.2301875 0.0936625 0.0492125"/>
+            </geometry>
+        </collision>
+        
+        <visual>
+            <geometry>
+                <box size="0.2301875 0.0936625 0.0492125"/>
+            </geometry>
+            <material name="bright_green">
+                <color rgba="0 255 0 1"/>
+            </material>
+        </visual>
+
+    </link>
+
+    
+<!--Front Right Wheel--> 
+    <link name="front_right_wheel">
+        <inertial>
+            <mass value="${wheel_mass}"/>
+            <inertia ixx="${wheel_inertial_xx}" ixy="0" ixz="0"
+                    iyy="${wheel_inertial_yy}" iyz="0" izz="${wheel_inertial_zz}"/>
+        </inertial>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+        </collision>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="joint_front_right_wheel" type="continuous">
+        <parent link="base_link"/>
+        <child link="front_right_wheel"/>
+        <origin xyz="${wheel_x_pos} ${wheel_y_pos} ${wheel_z_pos}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+<!--Front Left Wheel--> 
+    <link name="front_left_wheel">
+        <inertial>
+            <mass value="${wheel_mass}"/>
+            <inertia ixx="${wheel_inertial_xx}" ixy="0" ixz="0"
+                    iyy="${wheel_inertial_yy}" iyz="0" izz="${wheel_inertial_zz}"/>
+        </inertial>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+        </collision>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="joint_front_left_wheel" type="continuous">
+        <parent link="base_link"/>
+        <child link="front_left_wheel"/>
+        <origin xyz="${wheel_x_pos} -${wheel_y_pos} ${wheel_z_pos}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+<!--Back Right Wheel--> 
+    <link name="back_right_wheel">
+        <inertial>
+            <mass value="${wheel_mass}"/>
+            <inertia ixx="${wheel_inertial_xx}" ixy="0" ixz="0"
+                    iyy="${wheel_inertial_yy}" iyz="0" izz="${wheel_inertial_zz}"/>
+        </inertial>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+        </collision>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="joint_back_right_wheel" type="continuous">
+        <parent link="base_link"/>
+        <child link="back_right_wheel"/>
+        <origin xyz="-${wheel_x_pos} ${wheel_y_pos} ${wheel_z_pos}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+<!--Back Left Wheel--> 
+    <link name="back_left_wheel">
+        <inertial>
+            <mass value="${wheel_mass}"/>
+            <inertia ixx="${wheel_inertial_xx}" ixy="0" ixz="0"
+                    iyy="${wheel_inertial_yy}" iyz="0" izz="${wheel_inertial_zz}"/>
+        </inertial>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+        </collision>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="joint_back_left_wheel" type="continuous">
+        <parent link="base_link"/>
+        <child link="back_left_wheel"/>
+        <origin xyz="-${wheel_x_pos} -${wheel_y_pos} ${wheel_z_pos}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+</robot>

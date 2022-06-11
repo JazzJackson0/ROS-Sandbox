@@ -1,0 +1,54 @@
+<launch>
+    
+    <!--Args, Params & Includes-->
+    <arg name="model"/>
+    <arg name="gui" default-"False"/>
+    <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)"/>
+    <param name="use_gui" value="$(arg gui)"/>
+    <param name="/use_sim_time" value="true" />
+    <include file="$(find gazebo_worlds)/launch/empty_world.launch"/>
+    
+    <!--Run Joint State Publisher-->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" 
+        type="joint_state_publisher"/>
+
+    <!--Run Robot State Publisher-->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" 
+        type="state_publisher" output="screen">
+        <param name="publish_frequency" type="double" value="50.0" />
+    </node>
+
+    <!--Run RViz-->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find urdf_tutorial)/urdf.vcg"/>
+    
+    <!--Run Gazebo-->
+    <node name="spawn_robot" pkg="gazebo" type="spawn_model" 
+        args="-urdf -param robot_description -z 0.1 -model robot_model" 
+        respawn="false" output="screen" />
+
+    <!--Run the Map Server-->
+    <node name="map_sevrer", pkg="map_server", type="map_server" 
+        args="$(find chapter8_tutorials)/maps/map.yaml" output="screen"/>
+    <include file="$(find amcl)/example/amcl_diff.launch"/>
+
+    <!--Run Move_Base-->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" 
+        output="screen">
+        
+        <rosparam file="$(find chapter8_tutorials)/launch/costmap_common_params.yaml"
+            command="load" ns="global_costmap"/>
+
+        <rosparam file="$(find chapter8_tutorials)/launch/costmap_common_params.yaml"
+            command="load" ns="local_costmap"/>
+
+        <rosparam file="$(find chapter8_tutorials)/launch/local_costmap_params.yaml"
+            command="load"/>
+
+        <rosparam file="$(find chapter8_tutorials)/launch/global_costmap_params.yaml"
+            command="load"/>
+
+        <rosparam file="$(find chapter8_tutorials)/launch/base_local_planner_params.yaml"
+            command="load"/>
+    </node>
+
+</launch>

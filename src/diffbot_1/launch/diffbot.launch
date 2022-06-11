@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+    <!--Run Base Controller Node-->
+    <node name="base_controller" pkg="diffbot_1" type="base_controller.cpp" output="screen"/>
+
+    <!--Run Odometry (& tf) Publisher Node-->
+    <node name="odometry_tf_publisher" pkg="diffbot_1" type="odometry_tf_publisher.cpp" output="screen"/>
+
+    <!--Run Scanner Data Publisher Node-->
+    <node name="scannerdata_publisher" pkg="diffbot_1" type="scannerdata_publisher.cpp" output="screen"/>
+</launch>

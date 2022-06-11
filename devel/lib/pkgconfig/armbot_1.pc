@@ -1,0 +1,8 @@
+prefix=/home/jazz/Library.0/6-ROS-RobotModules/devel
+
+Name: armbot_1
+Description: Description of armbot_1
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

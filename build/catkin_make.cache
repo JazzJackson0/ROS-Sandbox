@@ -1,0 +1,2 @@
+armbot_1:diffbot_1
+-DCATKIN_DEVEL_PREFIX=/home/jazz/Library.0/6-ROS-RobotModules/devel -DCMAKE_INSTALL_PREFIX=/home/jazz/Library.0/6-ROS-RobotModules/install -G Unix Makefiles
