@@ -52,3 +52,11 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/diffbot_1" TYPE FILE FILES "/home/jazz/Library.0/6-ROS-Workspace/src/diffbot_1/package.xml")
 endif()
 
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/diffbot_1" TYPE PROGRAM FILES "/home/jazz/Library.0/6-ROS-Workspace/build/diffbot_1/catkin_generated/installspace/faxer.py")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/diffbot_1" TYPE PROGRAM FILES "/home/jazz/Library.0/6-ROS-Workspace/build/diffbot_1/catkin_generated/installspace/printer.py")
+endif()
+

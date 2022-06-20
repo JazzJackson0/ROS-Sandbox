@@ -2,11 +2,11 @@
     
     <!--Args, Params & Includes-->
     <arg name="model"/>
-    <arg name="gui" default-"False"/>
-    <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)"/>
+    <arg name="gui" default="False"/>
     <param name="use_gui" value="$(arg gui)"/>
-    <param name="/use_sim_time" value="true" />
-    <include file="$(find gazebo_worlds)/launch/empty_world.launch"/>
+    <param name="robot_description" textfile="$(find diffbot_1)/urdf/diffbot_4wheel.xacro"/>
+    <param name="use_sim_time" value="true"/>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
     
     <!--Run Joint State Publisher-->
     <node name="joint_state_publisher" pkg="joint_state_publisher" 
@@ -14,7 +14,7 @@
 
     <!--Run Robot State Publisher-->
     <node name="robot_state_publisher" pkg="robot_state_publisher" 
-        type="state_publisher" output="screen">
+        type="robot_state_publisher" output="screen">
         <param name="publish_frequency" type="double" value="50.0" />
     </node>
 
@@ -23,7 +23,7 @@
     
     <!--Run Gazebo-->
     <node name="spawn_robot" pkg="gazebo" type="spawn_model" 
-        args="-urdf -param robot_description -z 0.1 -model robot_model" 
+        args="-urdf -param robot_description -z 0.1 -model diff4wheel" 
         respawn="false" output="screen" />
 
     <!--Run the Map Server-->
@@ -49,6 +49,71 @@
 
         <rosparam file="$(find chapter8_tutorials)/launch/base_local_planner_params.yaml"
             command="load"/>
+    </node>
+
+    <!--Run GMapping-->
+    <arg name="scan_topic" default="front/scan"/>
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+        <param name="odom_frame" value="odom"/>
+        <param name="basic_frame" value="base_link"/>
+        <param name="map_frame" value="map"/>
+        <!--Process 1 out of every this many scans (set it to a higher number to skip more scans)-->
+        <param name="throttle_scans" value="1"/>
+        <param name="map_update_interval" value="5.0"/>
+        <!--The maximum usable range of the laser. A beam is cropped to this value.-->
+        <param name="maxUrange" value="5.0"/>
+        <!--The maximum range of sensor. If regions with no obstacles within the range of the .-->
+        <param name="maxRange" value="10.0"/>
+        <param name="sigma" value="0.05"/>
+        <param name="kernelSize" value="1"/>
+        <param name="lstep" value="0.05"/>
+        <param name="astep" value="0.05"/>
+        <param name="iterations" value="5"/>
+        <param name="lsigma" value="0.075"/>
+        <param name="ogain" value="3.0"/>
+        <param name="minimumScore" value="0.0"/>
+        <!--Number of beams to skip in each scan-->
+        <param name="lskip" value="0"/>
+        <param name="srr" value="0.01"/>
+        <param name="srt" value="0.02"/>
+        <param name="str" value="0.01"/>
+        <param name="stt" value="0.02"/>
+        <!--Initial Map Size-->
+        <param name="xmin" value="-10.0"/>
+        <param name="ymin" value="-10.0"/>
+        <param name="xmax" value="10.0"/>
+        <param name="ymax" value="10.0"/>
+        <!--Processing Parameters (Resolution of the map)-->
+        <param name="llsamplerange" value="0.01"/>
+        <param name="llsamplestep" value="0.01"/>
+        <param name="lasamplerange" value="0.005"/>
+        <param name="lasamplestep" value="0.005"/>
+        <remap from="scan" to="$(arg scan_topic)"/>
+    </node>    
+
+    <!--Run AMCL-->
+    <arg name="use_map_topic" default="false"/>
+    <arg name="scan_topic" default="front/scan"/>
+    <node pkg="amcl" type="amcl" name="amcl">
+        <param name="use_map_topic" value="$(arg use_map_topic)"/>
+        <!--Publish scans from best pose at a max of 10 Hz-->
+        <param name="odom_model_type" value=""/>
+        <param name="odom_alphas" value=""/>
+        <param name="gui_publish_rate" value=""/>
+        <param name="laser_max_beams" value=""/>
+        <param name="laser_min_range" value=""/>
+        <param name="laser_max_range" value=""/>
+        <param name="min_particles" value=""/>
+        <param name="max_particles" value=""/>
+        <!--Maximum error between the true distribution and the estimated distribution-->
+        <param name="kid_err" value=""/>
+        <param name="kid_z" value=""/>
+        <param name="odom_alpha1" value=""/>
+        <param name="odom_alpha2" value=""/>
+        <!--Translation std dev. m-->
+        <param name="" value=""/>
+        <param name="" value=""/>
+        <param name="" value=""/>
     </node>
 
 </launch>

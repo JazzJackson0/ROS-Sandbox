@@ -1,54 +1,86 @@
 <?xml version="1.0"?>
-<robot name="diffbot_2wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
-<include filename="$(find erratic_description)/urdf/erratic_hokuyo_ laser.xacro"/> 
+<robot name="diffbot_4wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<!--include filename="$(find erratic_description)/urdf/erratic_hokuyo_ laser.xacro"/ DEPRECATED--> 
+<xacro:property name="chassis_length" value="0.2301875"/>
+<xacro:property name="chassis_width" value="0.0936625"/>
+<xacro:property name="chassis_height" value="0.0492125"/>
+<xacro:property name="chassis_mass" value="1.5"/>
+
 <xacro:property name="wheel_radius" value="0.03175"/>
 <xacro:property name="wheel_length" value="0.0254"/>
 <xacro:property name="wheel_mass" value="0.0283495"/>
-<xacro:property name="wheel_inertial_xx" value="0.000008668680579"/>
-<xacro:property name="wheel_inertial_yy" value="0.000008668680579"/>
-<xacro:property name="wheel_inertial_zz" value="0.000002381505654"/>
-<xacro:property name="wheel_x_pos" value="0.057546875"/>
-<xacro:property name="wheel_y_pos" value="0.04683125"/>
+
+<xacro:property name="wheel_x_pos" value="${chassis_length / 4}"/>
+<xacro:property name="wheel_y_pos" value="${(chassis_width / 2) + (wheel_length / 2)}"/>
 <xacro:property name="wheel_z_pos" value="0"/>
 
+<xacro:macro name="chassis_inertial" params="mass">
+    <inertial>
+        <mass value="${mass}"/>
+        <inertia ixx="${(1/12) * chassis_mass * ( (chassis_height * chassis_height) + (chassis_length * chassis_length)) }" ixy="0" ixz="0"
+                iyy="${(1/12) * chassis_mass * ( (chassis_width * chassis_width) + (chassis_height * chassis_height)) }" iyz="0" 
+                izz="${(1/12) * chassis_mass * ( (chassis_width * chassis_width) + (chassis_length * chassis_length)) }"/>
+        </inertial>
+</xacro:macro>
+
+<xacro:macro name="wheel_inertial" params="mass">
+    <inertial>
+        <mass value="${mass}"/>
+        <inertia ixx="${(1/12) * wheel_mass * ( (3 * (wheel_radius * wheel_radius)) + (wheel_length * wheel_length)) }" ixy="0" ixz="0"
+                iyy="${(1/12) * wheel_mass * ( (3 * (wheel_radius * wheel_radius)) + (wheel_length * wheel_length)) }" iyz="0" 
+                izz="${(1/2) * wheel_mass * (wheel_radius * wheel_radius) }"/>
+        </inertial>
+</xacro:macro>
+
+
 <!-- Hokuyo Laser --> 
-<erratic_hokuyo_laser parent="base_link"> 
+<!--erratic_hokuyo_laser parent="base_link"> 
     <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/> 
-</erratic_hokuyo_laser>
+</erratic_hokuyo_laser-->
 
 <!--Base Link-->  
-    <link name="base_link">   
-        <inertial>
-            <mass value="1.5"/>
-            <inertia ixx="0.006926019414" ixy="0" ixz="0"
-                    iyy="0.001399316758" iyz="0" izz="0.007719868633"/>
-        </inertial>
+    <link name="base_link"></link>
+
+    <joint name="base_to_chassis" type="fixed">
+        <parent link="base_link"/>
+        <child link="chassis_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 0"/>
+    </joint>
+
+<!--Chassis Link-->  
+    <link name="chassis_link">   
+        
+        <xacro:chassis_inertial mass="${chassis_mass}"/>
 
         <collision name="base_link_collision">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <box size="0.2301875 0.0936625 0.0492125"/>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
             </geometry>
         </collision>
         
         <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <box size="0.2301875 0.0936625 0.0492125"/>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
             </geometry>
             <material name="bright_green">
-                <color rgba="0 255 0 1"/>
+                <color rgba="0 1 0 1"/>
             </material>
         </visual>
 
     </link>
 
+    <gazebo reference="chassis_link">
+        <material>Gazebo/Green</material>
+    </gazebo>
+
     
 <!--Front Right Wheel--> 
     <link name="front_right_wheel">
-        <inertial>
-            <mass value="${wheel_mass}"/>
-            <inertia ixx="${wheel_inertial_xx}" ixy="0" ixz="0"
-                    iyy="${wheel_inertial_yy}" iyz="0" izz="${wheel_inertial_zz}"/>
-        </inertial>
+        
+        <xacro:wheel_inertial mass="${wheel_mass}"/>
 
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -71,17 +103,18 @@
     <joint name="joint_front_right_wheel" type="continuous">
         <parent link="base_link"/>
         <child link="front_right_wheel"/>
-        <origin xyz="${wheel_x_pos} ${wheel_y_pos} ${wheel_z_pos}" rpy="0 0 0"/>
-        <axis xyz="0 1 0"/>
+        <origin xyz="${wheel_x_pos} ${wheel_y_pos} ${wheel_z_pos}" rpy="${pi/2} 0 0"/>
+        <axis xyz="0 0 -1"/>
     </joint>
+
+    <gazebo reference="front_right_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
 
 <!--Front Left Wheel--> 
     <link name="front_left_wheel">
-        <inertial>
-            <mass value="${wheel_mass}"/>
-            <inertia ixx="${wheel_inertial_xx}" ixy="0" ixz="0"
-                    iyy="${wheel_inertial_yy}" iyz="0" izz="${wheel_inertial_zz}"/>
-        </inertial>
+        
+        <xacro:wheel_inertial mass="${wheel_mass}"/>
 
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -104,17 +137,18 @@
     <joint name="joint_front_left_wheel" type="continuous">
         <parent link="base_link"/>
         <child link="front_left_wheel"/>
-        <origin xyz="${wheel_x_pos} -${wheel_y_pos} ${wheel_z_pos}" rpy="0 0 0"/>
-        <axis xyz="0 1 0"/>
+        <origin xyz="${wheel_x_pos} -${wheel_y_pos} ${wheel_z_pos}" rpy="-${pi/2} 0 0"/>
+        <axis xyz="0 0 1"/>
     </joint>
+
+    <gazebo reference="front_left_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
 
 <!--Back Right Wheel--> 
     <link name="back_right_wheel">
-        <inertial>
-            <mass value="${wheel_mass}"/>
-            <inertia ixx="${wheel_inertial_xx}" ixy="0" ixz="0"
-                    iyy="${wheel_inertial_yy}" iyz="0" izz="${wheel_inertial_zz}"/>
-        </inertial>
+        
+        <xacro:wheel_inertial mass="${wheel_mass}"/>
 
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -137,17 +171,18 @@
     <joint name="joint_back_right_wheel" type="continuous">
         <parent link="base_link"/>
         <child link="back_right_wheel"/>
-        <origin xyz="-${wheel_x_pos} ${wheel_y_pos} ${wheel_z_pos}" rpy="0 0 0"/>
-        <axis xyz="0 1 0"/>
+        <origin xyz="-${wheel_x_pos} ${wheel_y_pos} ${wheel_z_pos}" rpy="${pi/2} 0 0"/>
+        <axis xyz="0 0 -1"/>
     </joint>
+
+    <gazebo reference="back_right_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
 
 <!--Back Left Wheel--> 
     <link name="back_left_wheel">
-        <inertial>
-            <mass value="${wheel_mass}"/>
-            <inertia ixx="${wheel_inertial_xx}" ixy="0" ixz="0"
-                    iyy="${wheel_inertial_yy}" iyz="0" izz="${wheel_inertial_zz}"/>
-        </inertial>
+        
+        <xacro:wheel_inertial mass="${wheel_mass}"/>
 
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -170,8 +205,25 @@
     <joint name="joint_back_left_wheel" type="continuous">
         <parent link="base_link"/>
         <child link="back_left_wheel"/>
-        <origin xyz="-${wheel_x_pos} -${wheel_y_pos} ${wheel_z_pos}" rpy="0 0 0"/>
-        <axis xyz="0 1 0"/>
+        <origin xyz="-${wheel_x_pos} -${wheel_y_pos} ${wheel_z_pos}" rpy="-${pi/2} 0 0"/>
+        <axis xyz="0 0 1"/>
     </joint>
 
+    <gazebo reference="back_left_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+
+    <!--Gazebo Plugin-->
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
+
 </robot>
+
+
+
+
+

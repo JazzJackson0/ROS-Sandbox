@@ -1,293 +1,376 @@
 <?xml version="1.0"?>
 <robot name="arm1" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:property name="base_link_mass" value="0.1"/>
+<xacro:property name="base_link_length" value="0.05"/>
+<xacro:property name="base_link_width" value="0.05"/>
+<xacro:property name="base_link_height" value="0.05"/>
+
 <xacro:property name="arm_link_radius" value="0.017"/>
 <xacro:property name="arm_link_len" value="0.04"/>
+<xacro:property name="link_mass" value="0.025"/>
+
+<xacro:property name="head_link_mass" value="0.025"/>
+<xacro:property name="head_link_length" value="0.017"/>
+<xacro:property name="head_link_width" value="0.094"/>
+<xacro:property name="head_link_height" value="0.04"/>
+
+<xacro:property name="gripper_mass" value="0.01"/>
+
+<!--Intertial Macros-->
+<xacro:macro name="arm_base_inertial" params="mass">
+    <inertial>
+        <mass value="${base_link_mass}"/>
+        <inertia ixx="0.000041667" ixy="0" ixz="0"
+                iyy="0.000041667" iyz="0" 
+                izz="0.000041667"/>
+        </inertial>
+</xacro:macro>
+
+<xacro:macro name="link_inertial" params="mass">
+    <inertial>
+        <mass value="${link_mass}"/>
+        <inertia ixx="0.000010279" ixy="0" ixz="0"
+                iyy="0.000010279" iyz="0" 
+                izz="0.000007225"/>
+        </inertial>
+</xacro:macro>
+.000010279
+<xacro:macro name="gripper_inertial" params="mass">
+    <inertial>
+        <mass value="${gripper_mass}"/>
+        <inertia ixx="0.001" ixy="0" ixz="0"
+                iyy="0.001" iyz="0" 
+                izz="0.001"/>
+        </inertial>
+</xacro:macro>
+
+
+<!--Base Link-->  
+    <link name="base_link"></link>
+
+    <joint name="base_to_arm_base" type="fixed">
+        <parent link="base_link"/>
+        <child link="arm_base_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 0"/>
+    </joint>
 
 <!-- Base of Arm -->
-<link name="arm_base_link">
-    <inertial>
-        <mass value="0.1"/>
-        <origin rpy="0 0 0" xyz="0.0 0 0.0"/>
-        <inertia ixx="0.000041667" ixy="0" ixz="0" iyy="0.000041667" iyz="0" izz="0.000041667"/>
-    </inertial>
+    <link name="arm_base_link">
+        
+        <xacro:arm_base_inertial mass="${base_link_mass}"/>
 
-    <collision>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <geometry>
-            <box size="0.05 0.05 0.05">
-        </geometry>
-    </collision>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+        </collision>
 
-    <visual>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <geometry>
-            <box size="0.05 0.05 0.05">
-        </geometry>
-    </visual>
-</link>
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <gazebo reference="arm_base_link">
+        <material>Gazebo/Black</material>
+    </gazebo>
 
 <!-- First Arm Link -->
-<link name="arm_link_01">
-    <inertial>
-        <mass value="0.025"/>
-        <origin rpy="0 0 0" xyz="0.0 0 0.0"/>
-        <inertia ixx="0.000010279" ixy="0" ixz="0" iyy="0.000010279" iyz="0" izz="0.000007225"/>
-    </inertial>
+    <link name="arm_link_01">
+        
+        <xacro:link_inertial mass="${link_mass}"/>
 
-    <collision>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <geometry>
-            <cylinder radius="0.017" length="0.04">
-        </geometry>
-    </collision>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder radius="${arm_link_radius}" length="${arm_link_len}"/>
+            </geometry>
+        </collision>
 
-    <visual>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <geometry>
-            <cylinder radius="0.017" length="0.04">
-        </geometry>
-    </visual>
-</link>
-<joint name="arm_joint_1" type="revolute">
-    <axis xyz="0 0 1">
-    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="0.2"/>
-    <origin rpy="0 0 0" xyz="0 0 0.5"/>
-    <parent link="arm_base_link"/>
-    <child link="arm_link_01"/>
-</joint>
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder radius="${arm_link_radius}" length="${arm_link_len}"/>
+            </geometry>
+            <material name="grey">
+                <color rgba="0.392 0.392 0.392 1"/>
+            </material>
+        </visual>
+    </link>
+    <joint name="arm_joint_1" type="revolute">
+        <axis xyz="0 0 1"/>
+        <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="0.2"/>
+        <origin rpy="0 0 0" xyz="0 0 0.05"/>
+        <parent link="arm_base_link"/>
+        <child link="arm_link_01"/>
+    </joint>
+
+    <gazebo reference="arm_link_01">
+        <material>Gazebo/Grey</material>
+    </gazebo>
 
 <!-- Second Arm Link -->
-<link name="arm_link_02">
-    <inertial>
-        <mass value="0.025"/>
-        <origin rpy="0 0 0" xyz="0.0 0 0.0"/>
-        <inertia ixx="0.000010279" ixy="0" ixz="0" iyy="0.000010279" iyz="0" izz="0.000007225"/>
-    </inertial>
+    <link name="arm_link_02">
+        
+        <xacro:link_inertial mass="${link_mass}"/>
 
-    <collision>
-        <origin rpy="0 0 0" xyz="0 0 0.02"/>
-        <geometry>
-            <cylinder radius="0.017" length="0.04">
-        </geometry>
-    </collision>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0.02"/>
+            <geometry>
+                <cylinder radius="${arm_link_radius}" length="${arm_link_len}"/>
+            </geometry>
+        </collision>
 
-    <visual>
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0.02"/>
+            <geometry>
+                <cylinder radius="${arm_link_radius}" length="${arm_link_len}"/>
+            </geometry>
+            <material name="grey">
+                <color rgba="0.392 0.392 0.392 1"/>
+            </material>
+        </visual>
+    </link>
+    <joint name="arm_joint_2" type="revolute">
+        <axis xyz="1 0 0"/>
+        <limit effort="1000.0" lower="-1.8" upper="1.8" velocity="0.2"/>
         <origin rpy="0 0 0" xyz="0 0 0.02"/>
-        <geometry>
-            <cylinder radius="0.017" length="0.04">
-        </geometry>
-    </visual>
-</link>
-<joint name="arm_joint_2" type="revolute">
-    <axis xyz="1 0 0">
-    <limit effort="1000.0" lower="-1.8" upper="1.8" velocity="0.2"/>
-    <origin rpy="0 0 0" xyz="0 0 0.02"/>
-    <parent link="arm_link_01"/>
-    <child link="arm_link_02"/>
-</joint>
+        <parent link="arm_link_01"/>.000010279
+        <child link="arm_link_02"/>
+    </joint>
+
+    <gazebo reference="arm_link_02">
+        <material>Gazebo/Grey</material>
+    </gazebo>
 
 <!-- Third Arm Link -->
-<link name="arm_link_03">
-    <inertial>
-        <mass value="0.025"/>
-        <origin rpy="0 0 0" xyz="0.0 0 0.0"/>
-        <inertia ixx="0.000010279" ixy="0" ixz="0" iyy="0.000010279" iyz="0" izz="0.000007225"/>
-    </inertial>
+    <link name="arm_link_03">
+        
+        <xacro:link_inertial mass="${link_mass}"/>
 
-    <collision>
-        <origin rpy="0 0 0" xyz="0 0 0.02"/>
-        <geometry>
-            <cylinder radius="0.017" length="0.04">
-        </geometry>
-    </collision>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0.04"/>
+            <geometry>
+                <cylinder radius="${arm_link_radius}" length="${arm_link_len}"/>
+            </geometry>
+        </collision>
 
-    <visual>
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0.04"/>
+            <geometry>
+                <cylinder radius="${arm_link_radius}" length="${arm_link_len}"/>
+            </geometry>
+            <material name="grey">
+                <color rgba="0.392 0.392 0.392 1"/>
+            </material>
+        </visual>
+    </link>
+    <joint name="arm_joint_3" type="revolute">
+        <axis xyz="1 0 0"/>
+        <limit effort="1000.0" lower="-1.8" upper="1.8" velocity="0.2"/>
         <origin rpy="0 0 0" xyz="0 0 0.02"/>
-        <geometry>
-            <cylinder radius="0.017" length="0.04">
-        </geometry>
-    </visual>
-</link>
-<joint name="arm_joint_3" type="revolute">
-    <axis xyz="1 0 0">
-    <limit effort="1000.0" lower="-1.8" upper="1.8" velocity="0.2"/>
-    <origin rpy="0 0 0" xyz="0 0 0.02"/>
-    <parent link="arm_link_02"/>
-    <child link="arm_link_03"/>
-</joint>
+        <parent link="arm_link_02"/>
+        <child link="arm_link_03"/>
+    </joint>
+
+    <gazebo reference="arm_link_03">
+        <material>Gazebo/Grey</material>
+    </gazebo>
 
 
 <!-- Head Link -->
-<link name="head_link">
-    <inertial>
-        <mass value="0.025"/>
-        <origin rpy="0 0 0" xyz="0.0 0 0.0"/>
-        <inertia ixx="0.000010279" ixy="0" ixz="0" iyy="0.000010279" iyz="0" izz="0.000007225"/>
-    </inertial>
+    <link name="head_link">
+        
+        <xacro:link_inertial mass="${link_mass}"/>
 
-    <collision>
-        <origin rpy="0 0 1.57" xyz="0 0 0.05"/>
-        <geometry>
-            <box size="0.017 0.094 0.84">
-        </geometry>
-    </collision>
+        <collision>
+            <origin rpy="0 0 1.57" xyz="0 0 0.06"/>
+            <geometry>
+                <box size="${head_link_length} ${head_link_width} ${head_link_height}"/>
+            </geometry>
+        </collision>
 
-    <visual>
-        <origin rpy="0 0 1.57" xyz="0 0 0.05"/>
-        <geometry>
-            <box size="0.017 0.094 0.84">
-        </geometry>
-    </visual>
-</link>
-<joint name="head_joint" type="revolute">
-    <axis xyz="1 0 0">
-    <limit effort="1000.0" lower="-1.8" upper="1.8" velocity="0.5"/>
-    <origin rpy="0 0 1.57" xyz="0 0 0.05"/>
-    <parent link="arm_link_03"/>
-    <child link="arm_link_04"/>
-</joint>
+        <visual>
+            <origin rpy="0 0 1.57" xyz="0 0 0.06"/>
+            <geometry>
+                <box size="${head_link_length} ${head_link_width} ${head_link_height}"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+    <joint name="head_joint" type="revolute">
+        <axis xyz="1 0 0"/>
+        <limit effort="1000.0" lower="-1.8" upper="1.8" velocity="0.5"/>
+        <origin rpy="0 0 0" xyz="0 0 0.02"/>
+        <parent link="arm_link_03"/>
+        <child link="head_link"/>
+    </joint>
+
+    <gazebo reference="head_link">
+        <material>Gazebo/Black</material>
+    </gazebo>
 
 <!-- Gripper Link Right -->
-<link name="right_grip_link">
-    <inertial>
-        <mass value="0.01"/>
-        <origin xyz="0.0 0 0.0"/>
-        <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
+    <link name="right_grip_link">
+        
+        <xacro:gripper_inertial mass="${gripper_mass}"/>
 
-    <collision>
-        <origin rpy="0 3.1415 -1.57" xyz="-0.32 0 0.06"/> <!-- 'x' value indicates aperture of gripper-->
-        <geometry>
-            <mesh filename="package://two_wheels_description/meshes/chain_link_grip_r.stl" scale="0.001 0.001 0.001"/>
-        </geometry>
-    </collision>
+        <collision>
+            <origin rpy="0 3.1415 -1.57" xyz="-0.032 0 0.06"/> <!-- 'x' value indicates aperture of gripper-->
+            <geometry>
+                <!--Mesh obtained from  https://github.com/ROBOTIS-GIT/open_manipulator-->
+                <mesh filename="package://armbot_1/meshes/chain_link_grip_r.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </collision>
 
-    <visual>
-        <origin rpy="0 3.1415 -1.57" xyz="-0.32 0 0.06"/> <!-- 'x' value indicates aperture of gripper-->
-        <geometry>
-            <mesh filename="package://two_wheels_description/meshes/chain_link_grip_r.stl" scale="0.001 0.001 0.001"/>
-        </geometry>
-        <material name="grey"/>
-    </visual>
-</link>
-<joint name="right_grip_joint" type="prismatic">
-    <axis xyz="1 0 0">
-    <limit effort="1000.0" lower="-0.01" upper="0.035" velocity="6.5"/>
-    <origin rpy="0 0 0" xyz="-0.015 0 0.0"/>
-    <parent link="arm_link_04"/>
-    <child link="right_grip_link"/>
-</joint>
+        <visual>
+            <origin rpy="0 3.1415 -1.57" xyz="-0.032 0 0.06"/> <!-- 'x' value indicates aperture of gripper-->
+            <geometry>
+                <!--Mesh obtained from  https://github.com/ROBOTIS-GIT/open_manipulator-->
+                <mesh filename="package://armbot_1/meshes/chain_link_grip_r.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+    <joint name="right_grip_joint" type="prismatic">
+        <axis xyz="1 0 0"/>
+        <limit effort="1000.0" lower="-0.01" upper="0.035" velocity="6.5"/>
+        <origin rpy="0 0 0" xyz="-0.015 0 0"/>
+        <parent link="head_link"/>
+        <child link="right_grip_link"/>
+    </joint>
+
+    <gazebo reference="right_grip_link">
+        <material>Gazebo/Red</material>
+    </gazebo>
 
 <!-- Gripper Link Left -->
-<link name="left_grip_link">
-    <inertial>
-        <mass value="0.01"/>
-        <origin xyz="0.0 0 0.0"/>
-        <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
+    <link name="left_grip_link">
+        
+        <xacro:gripper_inertial mass="${gripper_mass}"/>
+        
+        <collision>
+            <origin rpy="0 3.1415 -1.57" xyz="0.062 0 0.06"/> <!-- 'x' value indicates aperture of gripper-->
+            <geometry>
+                <!--Mesh obtained from  https://github.com/ROBOTIS-GIT/open_manipulator-->
+                <mesh filename="package://armbot_1/meshes/chain_link_grip_l.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </collision>
 
-    <collision>
-        <origin rpy="0 3.1415 -1.57" xyz="0.062 0 0.06"/> <!-- 'x' value indicates aperture of gripper-->
-        <geometry>
-            <mesh filename="package://two_wheels_description/meshes/chain_link_grip_l.stl" scale="0.001 0.001 0.001"/>
-        </geometry>
-    </collision>
-<xacro:property name="arm_link_radius" value="0.017"/>
-    <visual>
-        <origin rpy="0 3.1415 -1.57" xyz="0.062 0 0.06"/> <!-- 'x' value indicates aperture of gripper-->
-        <geometry>
-            <mesh filename="package://two_wheels_description/meshes/chain_link_grip_l.stl" scale="0.001 0.001 0.001"/>
-        </geometry>
-        <material name="grey"/>
-    </visual>
-</link>
-<joint name="left_grip_joint" type="prismatic">
-    <axis xyz="1 0 0">
-    <limit effort="1000.0" lower="-0.01" upper="0.035" velocity="6.5"/>
-    <origin rpy="0 0 0" xyz="-0.015 0 0.0"/>
-    <parent link="arm_link_04"/>
-    <child link="left_grip_link"/>
-</joint>
+        <visual>
+            <origin rpy="0 3.1415 -1.57" xyz="0.062 0 0.06"/> <!-- 'x' value indicates aperture of gripper-->
+            <geometry>
+                <!--Mesh obtained from  https://github.com/ROBOTIS-GIT/open_manipulator-->
+                <mesh filename="package://armbot_1/meshes/chain_link_grip_l.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+    <joint name="left_grip_joint" type="prismatic">
+        <axis xyz="-1 0 0"/>
+        <limit effort="1000.0" lower="-0.01" upper="0.035" velocity="6.5"/>
+        <origin rpy="0 0 0" xyz="-0.015 0 0"/>
+        <parent link="head_link"/>
+        <child link="left_grip_link"/>
+    </joint>
+
+    <gazebo reference="left_grip_link">
+        <material>Gazebo/Red</material>
+    </gazebo>
 
 
 <!-- Transmission 1 -->
-<transmission name="arm_joint_1_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="arm_joint_1">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor1">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-</transmission>
+    <transmission name="arm_joint_1_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="arm_joint_1">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor1">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
 
 <!-- Transmission 2 -->
-<transmission name="arm_joint_2_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="arm_joint_2">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor2">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-</transmission>
+    <transmission name="arm_joint_2_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="arm_joint_2">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor2">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
 
 <!-- Transmission 3 -->
-<transmission name="arm_joint_3_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="arm_joint_3">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor3">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-</transmission>
+    <transmission name="arm_joint_3_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="arm_joint_3">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor3">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
 
 <!-- Transmission 4 -->
-<transmission name="arm_joint_4_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="arm_joint_4">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor4">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-</transmission>
+    <transmission name="head_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="head_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor4">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
 
 <!-- Transmission 5 -->
-<transmission name="right_grip_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_grip_joint">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor5">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-</transmission>
+    <transmission name="right_grip_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="right_grip_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor5">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
 
 <!-- Transmission 6 -->
-<transmission name="left_grip_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_grip_joint">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor6">
-        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-</transmission>
+    <transmission name="left_grip_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="left_grip_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor6">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
 
 <!-- ros_control Gazebo plugin: Enable control of joints/transmissions -->
-<gazebo>
-<plugin name="gazebo_ros_control" filename="lib_gazebo_ros_control.so">
-    <robotNamespace>/robot_arm1</robotNamespace>
-    <robotSimType>gazebo_ros_control/DefautRobotHWSim</robotSimType>
-</plugin>
-</gazebo>
+    <gazebo>
+    <plugin name="gazebo_ros_control" filename="lib_gazebo_ros_control.so">
+        <robotNamespace>/robot_arm1</robotNamespace>
+        <robotSimType>gazebo_ros_control/DefautRobotHWSim</robotSimType>
+    </plugin>
+    </gazebo>
 
 </robot>
