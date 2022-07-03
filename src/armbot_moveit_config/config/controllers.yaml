@@ -1,0 +1,19 @@
+controller_list:
+
+- name: arm_controller
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  joints:
+    - arm_base_link
+    - arm_link_01
+    - arm_link_02
+    - arm_link_03
+
+
+- name: head_controller
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  joints:
+    - head_link
+    - right_grip_link
+    - left_grip_link
