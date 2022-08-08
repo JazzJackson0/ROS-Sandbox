@@ -7,5 +7,29 @@
     <node name="odometry_tf_publisher" pkg="diffbot_1" type="odometry_tf_publisher.cpp" output="screen"/>
 
     <!--Run Scanner Data Publisher Node-->
-    <node name="scannerdata_publisher" pkg="diffbot_1" type="scannerdata_publisher.cpp" output="screen"/>
+    <include file="$(find rplidar_ros)/launch/rplidar.launch">
+
+    <!--Run Left Wheels PID Node-->
+    <node name="left_wheel_pid" pkg="pid" type="controller" >
+      <param name="Kp" value="5.0" />
+      <param name="Ki" value="0.0" />
+      <param name="Kd" value="0.1" />
+      <param name="upper_limit" value="1024" /> <!--PID Integral output clamped between values 0 and 1024 for PWM input.--> 
+      <param name="lower_limit" value="0" />
+      <param name="windup_limit" value="1024" />
+      <param name="max_loop_frequency" value="100.0" />
+      <param name="min_loop_frequency" value="100.0" />
+    </node>
+
+    <!--Run Right Wheels PID Node-->
+    <node name="right_wheel_pid" pkg="pid" type="controller" >
+      <param name="Kp" value="5.0" />
+      <param name="Ki" value="0.0" />
+      <param name="Kd" value="0.1" />
+      <param name="upper_limit" value="1024" /> <!--PID Integral output clamped between values 0 and 1024 for PWM input.--> 
+      <param name="lower_limit" value="0" />
+      <param name="windup_limit" value="1024" />
+      <param name="max_loop_frequency" value="100.0" />
+      <param name="min_loop_frequency" value="100.0" />
+    </node>
 </launch>

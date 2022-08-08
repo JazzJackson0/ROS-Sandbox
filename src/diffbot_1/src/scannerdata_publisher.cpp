@@ -1,13 +1,22 @@
 #include <iostream>
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
+#include <rpos/robot_platforms/slamware_core_platform.h>
+
+using namespace rpos::robot_platforms;
+using namespace std;
 
 
 int main(int argc, char** argv) {
 
+    
     ros::init(argc, argv, "scannerdata_publisher");
     ros::NodeHandle nh;
     ros::Publisher laser_pub = nh.advertise<sensor_msgs::LaserScan>("scan", 50);
+
+    SlamwareCorePlatform platform = SlamwareCorePlatform::connect("192.168.11.1", 1445);
+    cout << "Base version: " << platform.getSDPVersion() << endl;
+    
     double laser_freq = 40;
     int count = 0;
     ros::Rate r(1.0);
